@@ -55,7 +55,7 @@ struct node *display(struct node *start)
     {
         while(ptr!=NULL)
         {
-            printf("%d <-> ", ptr->data);
+            printf("%d <->",ptr->data);
             ptr = ptr->next;
         }
         return start;
@@ -102,14 +102,7 @@ struct node *insert_before(struct node *start)
     {
         if(ptr -> data == num)
         {
-            printf("\nEnter data : ");
-            scanf("%d",&data);
-            new_node = (struct node*)malloc(sizeof(struct node));
-            new_node -> data = data;
-            start -> prev = new_node;
-            new_node -> next = start;
-            new_node -> prev = NULL;
-            start = new_node;
+            start = insert_beg(start);
             return start;
         }
         else
@@ -161,18 +154,26 @@ struct node *insert_after(struct node *start)
     ans = search_val(start,num);
     if(ans == 1)
     {
-        printf("\nEnter data : ");
-        scanf("%d",&data);
-        new_node = (struct node*)malloc(sizeof(struct node));
-        new_node -> data = data;
         ptr = start;
         while(ptr -> data != num)
             ptr = ptr->next;
-        new_node -> prev = ptr;
-        new_node -> next = ptr -> next;
-        ptr -> next -> prev = new_node;
-        ptr -> next = new_node;
-        return start;
+        if(ptr -> next !=NULL)
+        {
+            printf("\nEnter data : ");
+            scanf("%d",&data);
+            new_node = (struct node*)malloc(sizeof(struct node));
+            new_node -> data = data;
+            new_node -> prev = ptr;
+            new_node -> next = ptr -> next;
+            ptr -> next -> prev = new_node;
+            ptr -> next = new_node;
+            return start;
+        }
+        else if(ptr -> next == NULL)
+        {
+            start = insert_end(start);
+            return start;
+        }
     }
     else
     {
@@ -204,13 +205,20 @@ struct node *delete_end(struct node *start)
 
 struct node *delete_node(struct node *start, int n)
 {
-    struct node *ptr=start, *preptr, *postptr;
+    struct node *ptr=start, *preptr, *postptr,*ptr1=start;
     int ans = search_val(start, n);
     if(ans == 1)
     {
+        while(ptr1 -> next != NULL)
+            ptr1 = ptr1 -> next;
         if(ptr -> data == n)
         {
             start = delete_beg(start);
+            return start;
+        }
+        else if(ptr1 -> data == n)
+        {
+            start = delete_end(start);
             return start;
         }
         else
